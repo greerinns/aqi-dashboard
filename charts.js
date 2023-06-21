@@ -1,6 +1,6 @@
 // Add js logic here
 // Create an array of each country's numbers
-d3.json("http://127.0.0.1:5000/api/v1.0/aqi/month/1/json").then(function(data) {
+d3.json("http://127.0.0.1:5000/api/v1.0/aqi/month/1").then(function(data) {
     console.log(data);
   })
 
