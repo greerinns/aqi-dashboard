@@ -1,10 +1,12 @@
 # Flask app goes here
 import numpy as np
-import pandas as pd
+#import pandas as pd
+#from pandas import read_sql
+#import pandas as pd
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, text
 
 from flask import Flask, jsonify
 import psycopg2
@@ -15,7 +17,7 @@ from config import postgres_key
 # Database Setup
 #################################################
 engine = create_engine(f"postgresql+psycopg2://postgres:{postgres_key}@localhost/aqi")
-conn = engine.connect()
+#conn = engine.connect()
 
 #################################################
 # Flask Setup
@@ -32,25 +34,73 @@ def welcome():
     """List all available api routes."""
     return (
         f"Available Routes:<br/>"
-        f"/api/v1.0/names<br/>"
-        f"/api/v1.0/passengers"
+        f"/api/v1.0/aqi/100<br/>"
+        f"/api/v1.0/aqi/month/1"
+        
     )
 
-@app.route("/api/v1.0/read_samples")
-def names():
+@app.route("/api/v1.0/aqi/100")
+def aqi_test():
     # Create our session (link) from Python to the DB
-    
-
-    """Return a list of all passenger names"""
+    """Return a list of all aqi data"""
     # Query all passengers and save them back
-    contacts_data = pd.read_sql('SELECT * FROM aqi LIMIT 10', conn)
+    conn = engine.connect()
+    # Connected to engine
+    # Reading in the aqi data from database
+    # aqi_data = pd.read_sql('SELECT * FROM aqi LIMIT 100', conn)
+    # dict = aqi_data.to_dict()
+    aqi_data = conn.execute(text('SELECT * FROM aqi LIMIT 100'))
+    output_data = [{"CBSA Code" : row[0],
+	                "Date" : row[1],
+	                "AQI"  : row[2],
+	                "Category" : row[3],
+	                "Defining Parameter" : row[4],
+	                "Number of Sites Reporting" : row[5],
+	                "city_ascii" : row[6],
+	                "state_id" : row[7],
+	                "state_name" : row[8],
+	                "lat" : row[9],
+	                "lng" : row[10],
+	                "population" : row[11],
+	                "density" : row[12],
+	                "timezone" : row[13]} for row in aqi_data]
+    # Closing connection
+    conn.close()
+    # Returning data from database as json
+    #return jsonify(dict.to_json())
+    return jsonify(output_data)
 
-    # Convert list of tuples into normal list
-    # all_names = list(np.ravel(results))
-    #flattens tuples into a list of lists
-    # can also use list(results)
+@app.route("/api/v1.0/aqi/month/<i>")
+def month(i):
+    # Create our session (link) from Python to the DB
+    """Return a list of all aqi data between a start and end date"""
+    # Query all passengers and save them back
+    conn = engine.connect()
+    # Connected to engine
+    # Reading in the aqi data from database
+    #aqi_data = pd.read_sql("SELECT * FROM "aqi" WHERE "Date" LIKE '1%'", conn)
+    # dict = aqi_data.to_dict()\
+    aqi_data = conn.execute(text(f"SELECT * FROM aqi WHERE \"Date\" LIKE '{i}/%'"))
+    output_data = [{"CBSA Code" : row[0],
+	                "Date" : row[1],
+	                "AQI"  : row[2],
+	                "Category" : row[3],
+	                "Defining Parameter" : row[4],
+	                "Number of Sites Reporting" : row[5],
+	                "city_ascii" : row[6],
+	                "state_id" : row[7],
+	                "state_name" : row[8],
+	                "lat" : row[9],
+	                "lng" : row[10],
+	                "population" : row[11],
+	                "density" : row[12],
+	                "timezone" : row[13]} for row in aqi_data]
+    # Closing connection
+    conn.close()
+    # Returning data from database as json
+    #return jsonify(dict.to_json())
+    return jsonify(output_data)
 
-    return jsonify(contacts_data.to_json())
-
+# Completing flask setup
 if __name__ == '__main__':
     app.run(debug=True)
