@@ -22,7 +22,7 @@ function init(response) {
   Plotly.newPlot("bar", dataJanState, layoutJanState);
 }
 
-let url = "http://127.0.0.1:5000/api/v1.0/aqi/month/"
+let url = "/api/v1.0/aqi/month/"
 d3.json(url.concat(1)).then(function(response){
   console.log(response);
   init(response)
