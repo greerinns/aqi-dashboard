@@ -8,8 +8,8 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func, text
 
-from flask_cors import CORS
-from flask import Flask, jsonify
+#from flask_cors import CORS
+from flask import Flask, jsonify, render_template
 import psycopg2
 from pathlib import Path
 # Use hidden file to import postgres db pwd
@@ -24,7 +24,7 @@ engine = create_engine(f"postgresql+psycopg2://postgres:{postgres_key}@localhost
 # Flask Setup
 #################################################
 app = Flask(__name__)
-CORS(app)
+
 
 #################################################
 # Flask Routes
@@ -32,13 +32,8 @@ CORS(app)
 
 @app.route("/")
 def welcome():
-    """List all available api routes."""
-    return (
-        f"Available Routes:<br/>"
-        f"/api/v1.0/aqi/100<br/>"
-        f"/api/v1.0/aqi/month/1"
-        
-    )
+    return render_template("index.html")
+# Connecting to index.html static file
 
 @app.route("/api/v1.0/aqi/100")
 def aqi_test():
@@ -48,8 +43,6 @@ def aqi_test():
     conn = engine.connect()
     # Connected to engine
     # Reading in the aqi data from database
-    # aqi_data = pd.read_sql('SELECT * FROM aqi LIMIT 100', conn)
-    # dict = aqi_data.to_dict()
     aqi_data = conn.execute(text('SELECT * FROM aqi LIMIT 100'))
     output_data = [{"CBSA Code" : row[0],
 	                "Date" : row[1],
