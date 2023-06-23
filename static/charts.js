@@ -24,14 +24,16 @@ function init(response) {
 // ------------------------- MAP FOR AQIs -----------------------------------------
 // Using create map function made outside of the init function
   createMap(response)
+// ------------------------- CHLOROPLETH MAP FOR AQIs -----------------------------------------
+  createChloro(response)
 }
 
 // -------------------------MAP FUNCTION CREATION-----------------------------------------
 function createMap(response) {      
   
-  var scl = [[0,'rgb(5, 10, 172)'],[0.35,'rgb(40, 60, 190)'],[0.5,'rgb(70, 100, 245)'], [0.6,'rgb(90, 120, 245)'],[0.7,'rgb(106, 137, 247)'],[1,'rgb(220, 220, 220)']];
+  var mapScl = [[0,'rgb(5, 10, 172)'],[0.35,'rgb(40, 60, 190)'],[0.5,'rgb(70, 100, 245)'], [0.6,'rgb(90, 120, 245)'],[0.7,'rgb(106, 137, 247)'],[1,'rgb(220, 220, 220)']];
 
-  var data = [{
+  var mapData = [{
           type:'scattergeo',
           locationmode: 'USA-states',
           lon: response.map(object => object.lng),
@@ -40,7 +42,7 @@ function createMap(response) {
           text:  response.map(object => object.AQI),
           mode: 'markers',
           marker: {
-              size: 6,
+              size: 7,
               opacity: 0.9,
               reversescale: true,
               autocolorscale: false,
@@ -49,7 +51,7 @@ function createMap(response) {
                   width: 1,
                   color: 'rgb(102,102,102)'
               },
-              colorscale: scl,
+              colorscale: mapScl,
               cmin: 0,
               color: response.map(object => object.AQI),
               colorbar: {
@@ -59,7 +61,7 @@ function createMap(response) {
       }];
 
 
-      var layout = {
+      var mapLayout = {
           title: 'AQI Levels in the US',
           colorbar: true,
           geo: {
@@ -76,8 +78,53 @@ function createMap(response) {
           }
       };
 
-      Plotly.newPlot("map", data, layout, {showLink: false});
+      Plotly.newPlot("map", mapData, mapLayout, {showLink: false});
+      // source: https://plotly.com/javascript/scatter-plots-on-maps/
     }
+
+// ------------------------- CHLOROPLETH FUNCTION -----------------------------------------
+function createChloro(response) {
+  console.log(response.map(object => object.AQI))
+  console.log(response.map(object => object.state_id))
+      var dataChloro = [{
+          type: 'choropleth',
+          locationmode: 'USA-states',
+          locations: response.map(object => object.state_id),
+          z: response.map(object => object.AQI),
+          text: response.map(object => object.state_name),
+          zmin: 0,
+          zmax: 100,
+          colorscale: [
+              [0, 'rgb(242,240,247)'], [0.2, 'rgb(218,218,235)'],
+              [0.4, 'rgb(188,189,220)'], [0.6, 'rgb(158,154,200)'],
+              [0.8, 'rgb(117,107,177)'], [1, 'rgb(84,39,143)']
+          ],
+          colorbar: {
+              title: 'AQI',
+              thickness: 0.1
+          },
+          marker: {
+              line:{
+                  color: 'rgb(255,255,255)',
+                  width: 2
+              }
+          }
+      }];
+
+
+      var layoutChloro = {
+          title: 'Chosen Month AQI Levels by State',
+          geo:{
+              scope: 'usa',
+              showlakes: true,
+              lakecolor: 'rgb(255,255,255)'
+          }
+      };
+
+      Plotly.newPlot("mapChloro", dataChloro, layoutChloro, {showLink: false});
+
+// source https://plotly.com/javascript/choropleth-maps/
+}
 
 // ------------------------- DROP DOWN CHANGES -----------------------------------------
 // Call updatePlotly() when a change takes place to the DOM
@@ -102,6 +149,8 @@ function updateCharts() {
     Plotly.restyle("bar", "y", [newY]);
     // ---- NEW MAP ----
     createMap(monthData)
+    // ---- NEW CHLORO ----
+    createChloro(monthData)
   });
 }
 
@@ -112,15 +161,3 @@ d3.json(url.concat(1)).then(function(response){
   // checking on data
   // run functions to create dash here
 });
-
-
-
-
-
-// Setting chosen month value to a string
-// let month = String(chosenMonth)
-//   d3.json(url.concat(chosenMonth)).then(function(response){
-//     console.log(response);
-//     // checking on data
-//     // run functions to create dash here
-// });

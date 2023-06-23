@@ -95,6 +95,26 @@ def month(i):
     #return jsonify(dict.to_json())
     return jsonify(output_data)
 
+# @app.route("/api/v1.0/aqi/month/<i>/states/avg-aqi")
+# def month_states_avg_aqi(i):
+#     # Create our session (link) from Python to the DB
+#     """Return a list of all aqi data between a start and end date"""
+#     # Query all passengers and save them back
+#     conn = engine.connect()
+#     # Connected to engine
+#     # Reading in the aqi data from database
+#     #aqi_data = pd.read_sql("SELECT * FROM "aqi" WHERE "Date" LIKE '1%'", conn)
+#     # dict = aqi_data.to_dict()\
+#     # SELECT AVG(\"AQI\"),'state_id' FROM aqi WHERE \"Date\" LIKE '{i}/%' GROUP BY 'state_id' ORDER BY 'state_id' ASC LIMIT 10
+#     aqi_data = conn.execute(text(f"SELECT \"AQI\",'state_id' FROM aqi WHERE \"Date\" LIKE '{i}/%' LIMIT 10"))
+#     output_data = [{"avg" : row[0],
+# 	                "state_id" : row[1]} for row in aqi_data]
+#     # Closing connection
+#     conn.close()
+#     # Returning data from database as json
+#     #return jsonify(dict.to_json())
+#     return jsonify(output_data)
+
 # Completing flask setup
 if __name__ == '__main__':
     app.run(debug=True)
