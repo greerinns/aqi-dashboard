@@ -13,6 +13,6 @@ https://www.kaggle.com/datasets/calebreigada/us-air-quality-1980present?resource
 ## Features
 1. Data Collection: Gather data on US Air Quality from provided sources.
 2. Data Cleaning: Preprocess the data, handle missing values, and ensure consistency.
-3. Visualization: Utilize JavaScript, particularly Leaflet.js, to create interactive visualizations showcasing the research questions.
+3. Visualization: Utilize JavaScript, HTML, PosgreSQL to create interactive visualizations showcasing the research questions.
 4. Analysis: Analyze the data to answer the research questions and identify any correlations or insights.
-5. Presentation: Create a presentation (on Powerpoint) summarising the findings and insights.
+5. Presentation: Create a presentation on Microsoft Powerpoint summarising the findings and insights.
