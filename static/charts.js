@@ -37,21 +37,13 @@ function updateBar() {
   // Now we make a new API call
   let urlBase = "/api/v1.0/aqi/month/"
   d3.json(urlBase.concat(monthNumber)).then(function(monthData){
-    console.log(monthData);
+    let newX = monthData.map(object => object.state_id);
+    let newY = monthData.map(object => object.AQI);
     // checking on data
+    Plotly.restyle("bar", "x", [newX]);
+    Plotly.restyle("bar", "y", [newY]);
   });
-  //array of arrays
-  // Note the extra brackets around 'x' and 'y'
-  // we already have a plot
-
-  //Plotly.restyle("plot", "x", [x]);
-  //Plotly.restyle("plot", "y", [y]);
 }
-
-
-
-
-
 
 let url = "/api/v1.0/aqi/month/"
 d3.json(url.concat(1)).then(function(response){
