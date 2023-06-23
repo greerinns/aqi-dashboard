@@ -54,30 +54,20 @@ function init(response) {
   
   // // Binding a popup to our marker
   // marker.bindPopup("Hello There!");
-  var data = [{
+  var dataMap = [{
     type: 'scattergeo',
     mode: 'markers+text',
-    text: [
-        'Montreal', 'Toronto', 'Vancouver', 'Calgary', 'Edmonton',
-        'Ottawa', 'Halifax', 'Victoria', 'Winnepeg', 'Regina'
-    ],
-    lon: [
-        -73.57, -79.24, -123.06, -114.1, -113.28,
-        -75.43, -63.57, -123.21, -97.13, -104.6
-    ],
-    lat: [
-        45.5, 43.4, 49.13, 51.1, 53.34, 45.24,
-        44.64, 48.25, 49.89, 50.45
-    ],
+    text: response.map(object => object.AQI),
+    lon: response.map(object => object.lng),
+    lat: response.map(object => object.lat),
     marker: {
         size: 7,
-        color: [
-            '#bebada', '#fdb462', '#fb8072', '#d9d9d9', '#bc80bd',
-            '#b3de69', '#8dd3c7', '#80b1d3', '#fccde5', '#ffffb3'
-        ],
-        line: {
-            width: 1
-        }
+        // color: [ add this later, ideally green red and yellow
+        //     '#00FF00', '#FFFF00', '#FF0000'
+        // ],
+        // line: {
+        //     width: 1
+        // }
     },
     name: 'AQI data in the US',
     textposition: [
@@ -86,7 +76,7 @@ function init(response) {
     ],
 }];
 
-var layout = {
+var layoutMap = {
     title: 'AQI data in the US',
     font: {
         family: 'Droid Serif, serif',
@@ -96,13 +86,13 @@ var layout = {
         size: 16
     },
     geo: {
-        scope: 'north america',
+        scope: 'united states',
         resolution: 50,
         lonaxis: {
             'range': [-130, -55]
         },
         lataxis: {
-            'range': [40, 70]
+            'range': [20, 50]
         },
         showrivers: true,
         rivercolor: '#fff',
@@ -116,9 +106,77 @@ var layout = {
     }
 };
 
-Plotly.newPlot('map', data, layout);
+Plotly.newPlot('map', dataMap, layoutMap);
 
 }
+
+// -------------------------MAP FUNCTION CREATION-----------------------------------------
+// var data = [{
+//   type: 'scattergeo',
+//   mode: 'markers+text',
+//   text: [
+//       'Montreal', 'Toronto', 'Vancouver', 'Calgary', 'Edmonton',
+//       'Ottawa', 'Halifax', 'Victoria', 'Winnepeg', 'Regina'
+//   ],
+//   lon: [
+//       -73.57, -79.24, -123.06, -114.1, -113.28,
+//       -75.43, -63.57, -123.21, -97.13, -104.6
+//   ],
+//   lat: [
+//       45.5, 43.4, 49.13, 51.1, 53.34, 45.24,
+//       44.64, 48.25, 49.89, 50.45
+//   ],
+//   marker: {
+//       size: 7,
+//       color: [
+//           '#bebada', '#fdb462', '#fb8072', '#d9d9d9', '#bc80bd',
+//           '#b3de69', '#8dd3c7', '#80b1d3', '#fccde5', '#ffffb3'
+//       ],
+//       line: {
+//           width: 1
+//       }
+//   },
+//   name: 'AQI data in the US',
+//   textposition: [
+//       'top right', 'top left', 'top center', 'bottom right', 'top right',
+//       'top left', 'bottom right', 'bottom left', 'top right', 'top right'
+//   ],
+// }];
+
+// var layout = {
+//   title: 'AQI data in the US',
+//   font: {
+//       family: 'Droid Serif, serif',
+//       size: 6
+//   },
+//   titlefont: {
+//       size: 16
+//   },
+//   geo: {
+//       scope: 'north america',
+//       resolution: 50,
+//       lonaxis: {
+//           'range': [-130, -55]
+//       },
+//       lataxis: {
+//           'range': [40, 70]
+//       },
+//       showrivers: true,
+//       rivercolor: '#fff',
+//       showlakes: true,
+//       lakecolor: '#fff',
+//       showland: true,
+//       landcolor: '#EAEAAE',
+//       countrycolor: '#d3d3d3',
+//       countrywidth: 1.5,
+//       subunitcolor: '#d3d3d3'
+//   }
+// };
+
+// Plotly.newPlot('map', data, layout);
+
+
+
 
 // ------------------------- DROP DOWN CHANGES -----------------------------------------
 // Call updatePlotly() when a change takes place to the DOM
