@@ -20,6 +20,12 @@ function init(response) {
 
   // Render the plot to the div tag with id "plot"
   Plotly.newPlot("bar", dataJanState, layoutJanState);
+
+// ------------------------- BAR CHART FOR STATE AQIs -----------------------------------------
+
+
+  
+
 }
 
 // ------------------------- DROP DOWN CHANGES -----------------------------------------

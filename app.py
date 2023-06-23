@@ -13,11 +13,11 @@ from flask import Flask, jsonify, render_template
 import psycopg2
 from pathlib import Path
 # Use hidden file to import postgres db pwd
-from config import postgres_key
+from config import postgres_key, db_name
 #################################################
 # Database Setup
 #################################################
-engine = create_engine(f"postgresql+psycopg2://postgres:{postgres_key}@localhost/aqi")
+engine = create_engine(f"postgresql+psycopg2://postgres:{postgres_key}@localhost/{db_name}")
 #conn = engine.connect()
 
 #################################################
