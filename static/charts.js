@@ -24,37 +24,99 @@ function init(response) {
 // ------------------------- MAP FOR AQIs -----------------------------------------
 
   
-  // Creating our initial map object:
-  // We set the longitude, latitude, and starting zoom level.
-  // This gets inserted into the div with an id of "map".
-  let myMap = L.map("map", {
-    center: [45.52, -122.67],
-    zoom: 13,
-    zoomControl: false
-  });
+  // // Creating our initial map object:
+  // // We set the longitude, latitude, and starting zoom level.
+  // // This gets inserted into the div with an id of "map".
+  // let myMap = L.map("map", {
+  //   center: [45.52, -122.67],
+  //   zoom: 13,
+  //   zoomControl: false
+  // });
 
-  // Adding a tile layer (the background map image) to our map:
-  // We use the addTo() method to add objects to our map.
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(myMap);
+  // // Adding a tile layer (the background map image) to our map:
+  // // We use the addTo() method to add objects to our map.
+  // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  // }).addTo(myMap);
 
-  const resizeObserver = new ResizeObserver(() => {
-    myMap.invalidateSize();
-  });
+  // const resizeObserver = new ResizeObserver(() => {
+  //   myMap.invalidateSize();
+  // });
   
-  const mapDiv = document.getElementById("map")
+  // const mapDiv = document.getElementById("map")
 
-  resizeObserver.observe(mapDiv);
+  // resizeObserver.observe(mapDiv);
 
-  let marker = L.marker([45.52, -122.67], {
-    draggable: true,
-    title: "My First Marker"
-  }).addTo(myMap);
+  // let marker = L.marker([45.52, -122.67], {
+  //   draggable: true,
+  //   title: "My First Marker"
+  // }).addTo(myMap);
   
-  // Binding a popup to our marker
-  marker.bindPopup("Hello There!");
-  
+  // // Binding a popup to our marker
+  // marker.bindPopup("Hello There!");
+  var data = [{
+    type: 'scattergeo',
+    mode: 'markers+text',
+    text: [
+        'Montreal', 'Toronto', 'Vancouver', 'Calgary', 'Edmonton',
+        'Ottawa', 'Halifax', 'Victoria', 'Winnepeg', 'Regina'
+    ],
+    lon: [
+        -73.57, -79.24, -123.06, -114.1, -113.28,
+        -75.43, -63.57, -123.21, -97.13, -104.6
+    ],
+    lat: [
+        45.5, 43.4, 49.13, 51.1, 53.34, 45.24,
+        44.64, 48.25, 49.89, 50.45
+    ],
+    marker: {
+        size: 7,
+        color: [
+            '#bebada', '#fdb462', '#fb8072', '#d9d9d9', '#bc80bd',
+            '#b3de69', '#8dd3c7', '#80b1d3', '#fccde5', '#ffffb3'
+        ],
+        line: {
+            width: 1
+        }
+    },
+    name: 'AQI data in the US',
+    textposition: [
+        'top right', 'top left', 'top center', 'bottom right', 'top right',
+        'top left', 'bottom right', 'bottom left', 'top right', 'top right'
+    ],
+}];
+
+var layout = {
+    title: 'AQI data in the US',
+    font: {
+        family: 'Droid Serif, serif',
+        size: 6
+    },
+    titlefont: {
+        size: 16
+    },
+    geo: {
+        scope: 'north america',
+        resolution: 50,
+        lonaxis: {
+            'range': [-130, -55]
+        },
+        lataxis: {
+            'range': [40, 70]
+        },
+        showrivers: true,
+        rivercolor: '#fff',
+        showlakes: true,
+        lakecolor: '#fff',
+        showland: true,
+        landcolor: '#EAEAAE',
+        countrycolor: '#d3d3d3',
+        countrywidth: 1.5,
+        subunitcolor: '#d3d3d3'
+    }
+};
+
+Plotly.newPlot('map', data, layout);
 
 }
 
