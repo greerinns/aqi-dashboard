@@ -26,6 +26,8 @@ function init(response) {
   createMap(response)
 // ------------------------- CHLOROPLETH MAP FOR AQIs -----------------------------------------
   createChloro(response)
+  // ------------------------- CHLOROPLETH MAP FOR AQIs -----------------------------------------
+  createBubble(response)
 }
 
 // -------------------------MAP FUNCTION CREATION-----------------------------------------
@@ -126,12 +128,41 @@ function createChloro(response) {
 // source https://plotly.com/javascript/choropleth-maps/
 }
 
+// ------------------------- BUBBLE CHART FUNCTION -----------------------------------------
+function createBubble(response){
+  // const stateEventData = document.getElementById('selDatasetStates');
+  // stateEventData.addEventListener('change', stateChange);
+  const bubbleChart = new Chart(
+    document.getElementById('bubble'),
+    {
+      type: 'bubble',
+      data: {
+        labels: response.map(object => object.lat),
+        datasets: [
+          {
+            label: 'AQI',
+            data: response.map(object => ({
+              x: object.lat,
+              y: object.AQI,
+              r: object.population/500000
+            })),
+            // borderColor: 'rgba(0,255,255,1)',
+            backgroundColor: 'rgba(0,255,255,1)'
+          }
+        ]
+      }
+    }
+  );
+}
+
 // ------------------------- DROP DOWN CHANGES -----------------------------------------
 // Call updatePlotly() when a change takes place to the DOM
 d3.selectAll("#selDataset").on("change", updateCharts);
+d3.selectAll("#selDatasetSataes").on("change", updateBubble);
+
 // when the dropdown list changes then run this, this is a function to change the bar chart
 
-// This function is called when a dropdown menu item is selected
+// This function is called when a month dropdown menu item is selected
 function updateCharts() {
   // Use D3 to select the dropdown menu
   let dropdownMenu = d3.select("#selDataset");
@@ -139,9 +170,9 @@ function updateCharts() {
   // This will give us the number of the month selected
   let monthNumber = dropdownMenu.property("value");
   // Now we make a new API call
-  let urlBase = "/api/v1.0/aqi/month/"
+  let urlBaseMonth = "/api/v1.0/aqi/month/"
   // ---- NEW API CALL----
-  d3.json(urlBase.concat(monthNumber)).then(function(monthData){
+  d3.json(urlBaseMonth.concat(monthNumber)).then(function(monthData){
      // ---- UPDATING BAR CHART ----
     let newX = monthData.map(object => object.state_id);
     let newY = monthData.map(object => object.AQI);
@@ -154,8 +185,35 @@ function updateCharts() {
   });
 }
 
-let url = "/api/v1.0/aqi/month/"
-d3.json(url.concat(1)).then(function(response){
+// This function is called when a state dropdown menu item is selected
+function updateBubble() {
+  // Use D3 to select the dropdown menu
+  let dropdownMenu = d3.select("#selDatasetStates");
+  // Assign the value of the dropdown menu option to a variable
+  // This will give us the number of the month selected
+  let stateValue = dropdownMenu.property("value");
+  // Now we make a new API call
+  let urlBaseState = "/api/v1.0/aqi/state/"
+  // ---- NEW API CALL----
+  d3.json(urlBaseState.concat(stateValue)).then(function(stateValue){
+    // ---- NEW BUBBLE ----
+    // createBubble(stateValue)
+    bubbleChart.update()
+    // ---- NEW MAP ----
+    // createMap(monthData)
+  });
+}
+
+let urlMonth = "/api/v1.0/aqi/month/"
+d3.json(urlMonth.concat(1)).then(function(response){
+  //console.log(response);
+  init(response)
+  // checking on data
+  // run functions to create dash here
+});
+
+let urlState = "/api/v1.0/aqi/state/"
+d3.json(urlState.concat(1)).then(function(response){
   //console.log(response);
   init(response)
   // checking on data
