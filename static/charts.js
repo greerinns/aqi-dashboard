@@ -26,9 +26,15 @@ function init(response) {
   createMap(response)
 // ------------------------- CHLOROPLETH MAP FOR AQIs -----------------------------------------
   createChloro(response)
-  // ------------------------- CHLOROPLETH MAP FOR AQIs -----------------------------------------
-  createBubble(response)
-}
+// ------------------------- BUBBLE CHART FOR AQIs -----------------------------------------
+  createBubble(response);
+};
+
+// function initBubble(response) {
+//   // ------------------------- BUBBLE CHART FOR AQIs -----------------------------------------
+//   createBubble(response);
+//   // createPie(response);
+// };
 
 // -------------------------MAP FUNCTION CREATION-----------------------------------------
 function createMap(response) {      
@@ -137,14 +143,14 @@ function createBubble(response){
     {
       type: 'bubble',
       data: {
-        labels: response.map(object => object.lat),
+        labels: response.map(object => object.population),
         datasets: [
           {
             label: 'AQI',
             data: response.map(object => ({
-              x: object.lat,
+              x: object.population/20000,
               y: object.AQI,
-              r: object.population/500000
+              r: 1
             })),
             // borderColor: 'rgba(0,255,255,1)',
             backgroundColor: 'rgba(0,255,255,1)'
@@ -155,10 +161,15 @@ function createBubble(response){
   );
 }
 
+// ------------------------- PIE CHART FUNCTION -----------------------------------------
+// function createPie(response) {
+
+// }
+
 // ------------------------- DROP DOWN CHANGES -----------------------------------------
 // Call updatePlotly() when a change takes place to the DOM
 d3.selectAll("#selDataset").on("change", updateCharts);
-d3.selectAll("#selDatasetSataes").on("change", updateBubble);
+d3.selectAll("#selDatasetStates").on("change", updateBubble);
 
 // when the dropdown list changes then run this, this is a function to change the bar chart
 
@@ -195,10 +206,10 @@ function updateBubble() {
   // Now we make a new API call
   let urlBaseState = "/api/v1.0/aqi/state/"
   // ---- NEW API CALL----
-  d3.json(urlBaseState.concat(stateValue)).then(function(stateValue){
+  d3.json(urlBaseState.concat(stateValue)).then(function(stateData){
     // ---- NEW BUBBLE ----
-    // createBubble(stateValue)
-    bubbleChart.update()
+    createBubble(stateData);
+    // bubbleChart.update(stateData)
     // ---- NEW MAP ----
     // createMap(monthData)
   });
@@ -215,6 +226,7 @@ d3.json(urlMonth.concat(1)).then(function(response){
 let urlState = "/api/v1.0/aqi/state/"
 d3.json(urlState.concat(1)).then(function(response){
   //console.log(response);
+  // initBubble(response)
   init(response)
   // checking on data
   // run functions to create dash here
