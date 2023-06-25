@@ -32,7 +32,7 @@
 </head>
 <body>
     <h2>Data Sorted by Month</h2>
-    <p>AQI Data for each month -- Bar Chart, Maps</p>
+    <p>AQI Data for each month -- Bar Chart, Maps, Pie Chart</p>
     <select id="selDataset">
         <option value="1">January</option>
         <option value="2">February</option>
@@ -50,7 +50,7 @@
     </select>
 
     <h2>Data Sorted by State</h2>
-    <p>AQI Data for each state -- Bubble Chart</p>
+    <p>AQI Data for each state -- Bubble Chart, Pie Chart</p>
     <select id="selDatasetStates">
         <option value="AL">Alabama</option>
         <option value="AK">Alaska</option>
@@ -153,6 +153,11 @@
       <div class="col-md-5">
         <div style="width: 500px;">
             <canvas id="bubble"></canvas>
+          </div>
+    </div>
+    <div class="col-md-5">
+        <div style="width: 500px;">
+            <canvas id="pie"></canvas>
           </div>
     </div>
     <!-- <p>Data Sources:<br />

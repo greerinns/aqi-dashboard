@@ -23,11 +23,13 @@ function init(response) {
 
 // ------------------------- MAP FOR AQIs -----------------------------------------
 // Using create map function made outside of the init function
-  createMap(response)
+  createMap(response);
 // ------------------------- CHLOROPLETH MAP FOR AQIs -----------------------------------------
-  createChloro(response)
+  createChloro(response);
 // ------------------------- BUBBLE CHART FOR AQIs -----------------------------------------
   createBubble(response);
+// ------------------------- PIE CHART FOR AQIs -----------------------------------------
+  createPie(response);
 };
 
 // function initBubble(response) {
@@ -92,8 +94,8 @@ function createMap(response) {
 
 // ------------------------- CHLOROPLETH FUNCTION -----------------------------------------
 function createChloro(response) {
-  console.log(response.map(object => object.AQI))
-  console.log(response.map(object => object.state_id))
+  // console.log(response.map(object => object.AQI))
+  // console.log(response.map(object => object.state_id))
       var dataChloro = [{
           type: 'choropleth',
           locationmode: 'USA-states',
@@ -162,9 +164,91 @@ function createBubble(response){
 }
 
 // ------------------------- PIE CHART FUNCTION -----------------------------------------
-// function createPie(response) {
+function createPie(response) {
+  // let dp25 = response.map(object => object.Category)
+  // let dp10 = 
+  // let dpOzone = 
+  // let dpCO = 
+  // let dpSO2 = 
+  // let dpNO2 = 
+  // let catGood = response.map(object => object.Category ==)
+  // let catModerate = response.map(object => object.Category)
+  // let catUnhealthy = response.map(object => object.Category)
+  // let catSensitive = response.map(object => object.Category)
+  // let catHazardous = response.map(object => object.Category)
 
-// }
+  // catGood = []
+  // catModerate =[]
+  // catUnhealthy =[]
+  // catSensitive =[]
+  // catHazardous =[]
+
+  // for (let i = 0; i < response.length; i++) {
+  //   if response.map(object => object.Category) 
+  // }
+
+  function catGood(category) {
+    return category == "Good";
+  }
+  function catModerate(category) {
+    return category == "Moderate";
+  }
+  function catUnhealthy(category) {
+    return category == "Unhealthy";
+  }
+  function catSensitive(category) {
+    return category == "Unhealthy for Sensitive Groups";
+  }
+  function catHazardous(category) {
+    return category == "Hazardous";
+  }
+
+  let good = response.map(object => object.Category).filter(catGood);
+  let mod = response.map(object => object.Category).filter(catModerate);
+  let unhealthy = response.map(object => object.Category).filter(catUnhealthy);
+  let sensitive = response.map(object => object.Category).filter(catSensitive);
+  let haz = response.map(object => object.Category).filter(catHazardous);
+  // console.log(good.length);
+  // console.log(mod.length);
+  // console.log(unhealthy.length);
+  // console.log(sensitive.length);
+  // console.log(haz.length);
+
+  // good, moderate, unhealthy, Unhealthy for Sensitive Groups, hazardous
+
+  const pieChart = new Chart(
+    document.getElementById('pie'),
+    {
+      type: 'pie',
+      data: {
+        labels: [
+          'Good',
+          'Moderate',
+          'Unhealthy for Sensitive Groups',
+          'Unhealthy',
+          'Hazardous'
+        ],
+        datasets: [{
+          label: 'AQI Category',
+          data: [
+            good.length,
+            mod.length,
+            unhealthy.length,
+            sensitive.length,
+            haz.length
+          ],
+          backgroundColor: [
+            'rgb(0,255,0)',
+            'rgb(255, 205, 86)',
+            'rgb(255, 153, 51)',
+            'rgb(128,0,0)',
+            'rgb(255,0,0)'
+          ]
+        }]
+      }
+    }
+  )
+};
 
 // ------------------------- DROP DOWN CHANGES -----------------------------------------
 // Call updatePlotly() when a change takes place to the DOM
@@ -193,6 +277,8 @@ function updateCharts() {
     createMap(monthData)
     // ---- NEW CHLORO ----
     createChloro(monthData)
+    // ---- NEW PIE ----
+    createPie(monthData);
   });
 }
 
@@ -212,6 +298,8 @@ function updateBubble() {
     // bubbleChart.update(stateData)
     // ---- NEW MAP ----
     // createMap(monthData)
+    // ---- NEW PIE ----
+    createPie(stateData);
   });
 }
 
