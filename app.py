@@ -1,14 +1,10 @@
 # Flask app goes here
 import numpy as np
-#import pandas as pd
-#from pandas import read_sql
-#import pandas as pd
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func, text
 
-#from flask_cors import CORS
 from flask import Flask, jsonify, render_template
 import psycopg2
 from pathlib import Path
@@ -18,7 +14,6 @@ from config import postgres_key, db_name
 # Database Setup
 #################################################
 engine = create_engine(f"postgresql+psycopg2://postgres:{postgres_key}@localhost/{db_name}")
-#conn = engine.connect()
 
 #################################################
 # Flask Setup
@@ -38,8 +33,6 @@ def welcome():
 @app.route("/api/v1.0/aqi/100")
 def aqi_test():
     # Create our session (link) from Python to the DB
-    """Return a list of all aqi data"""
-    # Query all passengers and save them back
     conn = engine.connect()
     # Connected to engine
     # Reading in the aqi data from database
@@ -68,12 +61,9 @@ def aqi_test():
 def month(i):
     # Create our session (link) from Python to the DB
     """Return a list of all aqi data between a start and end date"""
-    # Query all passengers and save them back
     conn = engine.connect()
     # Connected to engine
     # Reading in the aqi data from database
-    #aqi_data = pd.read_sql("SELECT * FROM "aqi" WHERE "Date" LIKE '1%'", conn)
-    # dict = aqi_data.to_dict()\
     aqi_data = conn.execute(text(f"SELECT * FROM aqi WHERE \"Date\" LIKE '{i}/%'"))
     output_data = [{"CBSA Code" : row[0],
 	                "Date" : row[1],
@@ -92,19 +82,15 @@ def month(i):
     # Closing connection
     conn.close()
     # Returning data from database as json
-    #return jsonify(dict.to_json())
     return jsonify(output_data)
 
 @app.route("/api/v1.0/aqi/state/<i>")
 def state(i):
     # Create our session (link) from Python to the DB
     """Return a list of all aqi data between a start and end date"""
-    # Query all passengers and save them back
     conn = engine.connect()
     # Connected to engine
     # Reading in the aqi data from database
-    #aqi_data = pd.read_sql("SELECT * FROM "aqi" WHERE "Date" LIKE '1%'", conn)
-    # dict = aqi_data.to_dict()\
     aqi_data = conn.execute(text(f"SELECT * FROM aqi WHERE \"state_id\" = '{i.upper()}'"))
     output_data = [{"CBSA Code" : row[0],
 	                "Date" : row[1],
@@ -130,14 +116,9 @@ def state(i):
 def avg_aqi(i):
     # Create our session (link) from Python to the DB
     """Return a list of aqi state avg"""
-    # Query all passengers and save them back
     conn = engine.connect()
     # Connected to engine
     # Reading in the aqi data from database
-    #aqi_data = pd.read_sql("SELECT * FROM "aqi" WHERE "Date" LIKE '1%'", conn)
-    # dict = aqi_data.to_dict()\
-    # SELECT * FROM aqi WHERE \"Date\" LIKE '{i}/%'
-    # aqi_data = conn.execute(text(f"SELECT state_id, max(\"AQI\") over(partition by state_id) as AVG_AQI from aqi"))
     aqi_data = conn.execute(text(f"SELECT state_id, avg(\"AQI\") over(partition by state_id) as AVG_AQI from aqi WHERE \"Date\" LIKE '{i}/%'"))
     output_data = [{"state_id" : row[0],
 	                "avg" : row[1]} for row in aqi_data]
@@ -147,27 +128,6 @@ def avg_aqi(i):
     #return jsonify(dict.to_json())
     return jsonify(output_data)
 
-#SELECT *, avg("AQI") over(partition by "state_id") as AVG_AQI from aqi
-
-# @app.route("/api/v1.0/aqi/month/<i>/states/avg-aqi")
-# def month_states_avg_aqi(i):
-#     # Create our session (link) from Python to the DB
-#     """Return a list of all aqi data between a start and end date"""
-#     # Query all passengers and save them back
-#     conn = engine.connect()
-#     # Connected to engine
-#     # Reading in the aqi data from database
-#     #aqi_data = pd.read_sql("SELECT * FROM "aqi" WHERE "Date" LIKE '1%'", conn)
-#     # dict = aqi_data.to_dict()\
-#     # SELECT AVG(\"AQI\"),'state_id' FROM aqi WHERE \"Date\" LIKE '{i}/%' GROUP BY 'state_id' ORDER BY 'state_id' ASC LIMIT 10
-#     aqi_data = conn.execute(text(f"SELECT \"AQI\",'state_id' FROM aqi WHERE \"Date\" LIKE '{i}/%' LIMIT 10"))
-#     output_data = [{"avg" : row[0],
-# 	                "state_id" : row[1]} for row in aqi_data]
-#     # Closing connection
-#     conn.close()
-#     # Returning data from database as json
-#     #return jsonify(dict.to_json())
-#     return jsonify(output_data)
 
 # Completing flask setup
 if __name__ == '__main__':

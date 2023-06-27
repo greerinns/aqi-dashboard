@@ -15,6 +15,7 @@ function init(response) {
   createPie(response);
 };
 
+
 // ########################################### 
 // BAR FUNCTION CREATION 
 // ###########################################
@@ -28,7 +29,6 @@ function createBar(response) {
     .filter((value, index, self) => self.indexOf(value) === index);
 
   let traceJanState = {
-    // x: meanAQI,
     x: avg_aqis.map(object => object),
     y: states.map(object => object),
     type: "bar",
@@ -40,7 +40,7 @@ function createBar(response) {
 
   // Apply the group barmode to the layout
   let layoutJanState = {
-    title: "State AQI Results"
+    title: "Average AQI per State"
   };
 
   // Render the plot to the div tag with id "plot"
@@ -104,6 +104,7 @@ function createMap(response) {
       // source: https://plotly.com/javascript/scatter-plots-on-maps/
 };
 
+
 // ########################################### 
 // CHOROPLETH FUNCTION 
 // ###########################################
@@ -135,7 +136,7 @@ function createChloro(response) {
 
 
       var layoutChloro = {
-          title: 'Maximum AQI Levels by State',
+          title: 'Average AQI Level by State',
           geo:{
               scope: 'usa',
               showlakes: true,
@@ -148,6 +149,7 @@ function createChloro(response) {
 // source https://plotly.com/javascript/choropleth-maps/
 };
 
+
 // ########################################### 
 // BUBBLE CHART FUNCTION 
 // ###########################################
@@ -156,6 +158,13 @@ function createBubble(response){
     document.getElementById('bubble'),
     {
       type: 'bubble',
+      options: {
+        title: {
+          display: true,
+          text: 'State Population vs. AQI',
+          fontSize: 18
+        }
+      },
       data: {
         labels: response.map(object => object.population),
         datasets: [
@@ -166,7 +175,6 @@ function createBubble(response){
               y: object.AQI,
               r: 1
             })),
-            // borderColor: 'rgba(0,255,255,1)',
             backgroundColor: 'rgba(0,255,255,1)'
           }
         ]
@@ -175,28 +183,11 @@ function createBubble(response){
   );
 };
 
+
 // ########################################### 
 // PIE CHART FUNCTION 
 // ###########################################
 function createPie(response) {
-  // let dp25 = response.map(object => object.Category)
-  // let dp10 = 
-  // let dpOzone = 
-  // let dpCO = 
-  // let dpSO2 = 
-  // let dpNO2 = 
-  // let catGood = response.map(object => object.Category ==)
-  // let catModerate = response.map(object => object.Category)
-  // let catUnhealthy = response.map(object => object.Category)
-  // let catSensitive = response.map(object => object.Category)
-  // let catHazardous = response.map(object => object.Category)
-
-  // catGood = []
-  // catModerate =[]
-  // catUnhealthy =[]
-  // catSensitive =[]
-  // catHazardous =[]
-
   function catGood(category) {
     return category == "Good";
   }
@@ -223,6 +214,13 @@ function createPie(response) {
     document.getElementById('pie'),
     {
       type: 'pie',
+      options: {
+        title: {
+          display: true,
+          text: 'AQI Category Breakdown',
+          fontSize: 18
+        }
+      },
       data: {
         labels: [
           'Good',
@@ -252,6 +250,8 @@ function createPie(response) {
     }
   )
 };
+
+
 
 // ###########################################
 // DROP DOWN CHANGES 
@@ -310,8 +310,6 @@ function updateBubble() {
     createPie(stateData);
   });
 };
-
-
 
 
 let urlMonth = "/api/v1.0/aqi/month/"
