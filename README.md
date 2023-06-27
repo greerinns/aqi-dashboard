@@ -7,12 +7,64 @@ Instructor: Ahmad Sweed
 
 TA’s: Venkata Kuppa, Karen Fisher, Brian Perry, Ryan Bernstein
 ## Rationale
-The study aims to analyze the trends in Air Quality Index (AQI) across the United States through a dashboard of visualizations. With increasing concern about the impact of air pollution on human health and the environment, understanding the patterns and changes in AQI is crucial for policy development and mitigation strategies. This study will facilitate informed ideas about the state of air quality, demonstrating state and city trends and geographical patterns between population density, air quality particulates, and AQI levels.
+For our project, we focused on a series of interactive charts that visualize the trends in Air Quality Index, across the United States. Recently, air quality has been a subject of public interest as it has had such a profound effect on human health. Focusing on the patterns that come from the trends in Air Quality Index can influence climate change policy and health regulations. We chose this topic for our project due to our interest in patterns in AQI levels in different states and how it can vary across different months.
+
 ## Data Sources
 https://www.kaggle.com/datasets/calebreigada/us-air-quality-1980present?resource=download
+AQI or Air Quality Index is the primary way to measure the current quality of the air. AQI values range from 0-500 with 0 being perfectly healthy and 500 being extremely hazardous. The data in this file contained the following values for each row: CBSA Code, Date, AQI, Category, Defining Paramter, Number of Sites Reporting, city_ascii, state_di, lat, lng, population, density, and timezone. This data was taken over several years, but for the purposes of this study the rows were narrowed to the years of 2021 and 2022.
+
+<img width="545" alt="Screenshot 2023-06-27 at 7 18 34 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/936b044a-7d10-4440-aeb5-6d8399531df9">
+
+<img width="475" alt="Screenshot 2023-06-27 at 7 18 52 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/8d9c30ae-dfa1-4346-9205-0afce0d42663">
+
 ## Features
-1. Data Collection: Gather data on US Air Quality from provided sources.
-2. Data Cleaning: Preprocess the data, handle missing values, and ensure consistency.
-3. Visualization: Utilize JavaScript, HTML, PosgreSQL to create interactive visualizations showcasing the research questions.
-4. Analysis: Analyze the data to answer the research questions and identify any correlations or insights.
-5. Presentation: Create a presentation on Microsoft Powerpoint summarising the findings and insights.
+1. Data Collection: Gather data on US Air Quality from chosen source.
+2. Data Cleaning:  Handle missing values and file size.
+3. Visualization: Utilize JavaScript, HTML, PostgreSQL to create interactive visualizations showcasing AQI trends
+4. Presentation: Create a powerpoint presentation and readMe file summarising our process.
+
+## Flask App
+### Welcome Route:
+This route connects the Flask app to the front-end by rendering a static HTML file.
+The render_template function is used to render the HTML file. By connecting the Flask app to the front-end, we avoid issues with Cross-Origin Resource Sharing (CORS) and local file access.
+
+### Month Route:
+This route takes a month as input in the URL route (/api/v1.0/aqi/month/<i>). The month is passed as a number.A query is executed to retrieve all columns where the date begins with the expression "i/".
+The narrowed dataset for the given month is returned.
+
+### State Route:
+Similar to the Month Route, this route takes a state ID or abbreviation as input in the URL route. The input is converted to uppercase to match the database values. The route executes a query to retrieve all columns of the matching rows. The narrowed dataset for the given state is returned.
+
+### Average Month Route:
+This route calculates the average AQI (Air Quality Index) for each state over a selected month.
+The month is still passed as "i" in the route (/api/v1.0/aqi-avg/month/<i>).
+A window function is used to perform the calculation in SQL. The output of the executed statement is converted into a JSONifiable variable. 
+
+## HTML Drop Downs
+The index.html file includes two dropdown menus. The dropdown menus are designed to control the five visualizations on our dashboard. The options in the dropdown menus have user-friendly texts, while their values are intended to be easily used in the API calls made in the JavaScript code.
+For example, the dropdown menu for monthly data and average data has options with numbers representing months as the value, and the dropdown menu for state data has options with state ID values.
+
+<img width="201" alt="Screenshot 2023-06-27 at 7 30 02 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/37ebe33c-78d3-4c59-aa89-331bbb489dd0">
+
+<img width="311" alt="Screenshot 2023-06-27 at 7 30 10 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/25d0819a-9068-4c12-85ef-2c0aa1fc3df6">
+
+## Javascript
+### Bar Chart
+<img width="830" alt="Screenshot 2023-06-27 at 7 33 44 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/36a64d05-b65e-4afd-be66-0f91f79f47e3">
+
+### Maps
+<img width="814" alt="Screenshot 2023-06-27 at 7 34 08 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/04efc36b-0290-459d-ac7a-9d36becf7a80">
+
+<img width="772" alt="Screenshot 2023-06-27 at 7 34 24 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/cfd27b09-a6f3-4fe5-9c91-f2849544d9c4">
+
+### AQI vs Population per 2000 and AQI Category Pie Chart
+<img width="1073" alt="Screenshot 2023-06-27 at 7 35 50 PM" src="https://github.com/SkylerKhalachyan/Project_3_US_Air_Quality/assets/47437697/836a0273-a680-45cf-8349-d1235f989e07">
+
+## Future Plans
+
+In our dashboard project, we initially planned to include a pie chart displaying the breakdown of the six dominant particulates in the air based on a defining parameter column in our dataset. However, during the JavaScript implementation phase, we realized that we should have removed the spaces in the column names. As a workaround, we decided to use the AQI Category instead. In future projects, we would ensure to rename the columns in the Excel file before creating the database to avoid such issues.
+
+To further explore the relationship between population and Air Quality Index, it could be intriguing to incorporate an additional dataset with more detection points in areas with varying populations.
+
+It's also important to note that our analysis was limited to data from 2021 and 2022 due to the large size of our dataset. Ideally we would increase the database in postgres to store all the years available.
+
