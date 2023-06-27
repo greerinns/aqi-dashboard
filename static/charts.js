@@ -1,31 +1,14 @@
 // Add js logic here
 function init(response) {
 // ------------------------- BAR CHART FOR STATE AQIs -------------------------
-// Trace for the state and AQI data
-//   let traceJanState = {
-//     x: response.map(object => object.state_id),
-//     y: response.map(object => object.AQI),
-//     type: "bar"
-//   };
-
-//   // Data trace array
-//   let dataJanState = [traceJanState];
-
-//   // Apply the group barmode to the layout
-//   let layoutJanState = {
-//     title: "State AQI Results"
-//   };
-
-//   // Render the plot to the div tag with id "plot"
-//   Plotly.newPlot("bar", dataJanState, layoutJanState);
-
-// ------------------------- BAR CHART FOR STATE AQIs -------------------------
-  createBar(response);
+  // createBar(response);
+  d3.json('/api/v1.0/aqi-avg/month/1').then(function(response){createBar(response)});
 // ------------------------- MAP FOR AQIs -------------------------
 // Using create map function made outside of the init function
   createMap(response);
 // ------------------------- CHOROPLETH MAP FOR AQIs -------------------------
-  createChloro(response);
+ // changed url
+ d3.json('/api/v1.0/aqi-avg/month/1').then(function(response){createChloro(response)});
 // ------------------------- BUBBLE CHART FOR AQIs -------------------------
   createBubble(response);
 // ------------------------- PIE CHART FOR AQIs -------------------------
@@ -40,78 +23,13 @@ function createBar(response) {
 
   let states = response.map(object => object.state_id)
     .filter((value, index, self) => self.indexOf(value) === index);
-  // console.log(states);
-  let aqi = "AQI";
 
-  function mean(response, states, aqi) {
-    let count = 0;
-    let total = 0;
-    for (let i = 0; i < response.length; i++) {
-      row = response[i];
-
-      if (row.state_id == states){
-        total += row[aqi];
-        count += 1;
-      }
-    }
-    let meanAQI = total / count;
-
-    return meanAQI;
-  }
-  // let state = states.map(object => object);
-  // console.log(state);
-  // let meanAQIData = mean(response, "CA", aqi);
-  // console.log(meanAQIData);
-
-  function xValue (){
-    for (let i = 0; i < states.length; i++) {
-    let meanAQIData = mean(response, states[i], aqi);
-    console.log(meanAQIData);
-  };
-}
-  // console.log(meanAQIData);
-
-  // for (let i = 0; i < states.length; i++) {
-  //   let meanAQIFunc = mean(response, states[i], aqi);
-  //   console.log(meanAQIFunc);
-
-  //   let traceJanState = {
-  //     x: meanAQIFunc,
-  //     y: states[i],
-  //     type: "bar",
-  //     orientation: "h"
-  //   };
-
-  //   // Data trace array
-  // let dataJanState = [traceJanState];
-
-  // // Apply the group barmode to the layout
-  // let layoutJanState = {
-  //   title: "State AQI Results"
-  // };
-
-  // // Render the plot to the div tag with id "plot"
-  // Plotly.newPlot("bar", dataJanState, layoutJanState);
-  // };
-
-  // const groupByStateID = response.map(object => object).groupByToMap(object => object.state_id);
-  // console.log(groupByStateID);
-  // console.log(response); --- this is all the data for January (by month)
-  // let good = response.map(object => object.Category).filter(catGood);
-
-  let aqiData = response.map(object => object)
-  let meanAQI = xValue();
-  console.log(meanAQI);
-  // let sortedByAQI = response.map(object => object).sort((a, b) => b.AQI - a.AQI);
-  // let sortedByAQI = meanAQI.sort((a, b) => b.AQI - a.AQI);
-
-  // slicedData = sortedByAQI.slice(0, 10);
-
-  // reversedData = slicedData.reverse();
-  // reversedData = meanAQI.reverse();
+  let avg_aqis = response.map(object => object.avg)
+    .filter((value, index, self) => self.indexOf(value) === index);
 
   let traceJanState = {
-    x: meanAQI,
+    // x: meanAQI,
+    x: avg_aqis.map(object => object),
     y: states.map(object => object),
     type: "bar",
     orientation: "h"
@@ -127,25 +45,6 @@ function createBar(response) {
 
   // Render the plot to the div tag with id "plot"
   Plotly.newPlot("bar", dataJanState, layoutJanState);
-
-  // ----------------------- ORIGINAL BAR CHART LAYOUT -----------------------
-  //   // Trace for the state and AQI data
-  // let traceJanState = {
-  //   x: response.map(object => object.state_id),
-  //   y: response.map(object => object.AQI),
-  //   type: "bar"
-  // };
-
-  // // Data trace array
-  // let dataJanState = [traceJanState];
-
-  // // Apply the group barmode to the layout
-  // let layoutJanState = {
-  //   title: "State AQI Results"
-  // };
-
-  // // Render the plot to the div tag with id "plot"
-  // Plotly.newPlot("bar", dataJanState, layoutJanState);
 };
 
 
@@ -213,10 +112,10 @@ function createChloro(response) {
           type: 'choropleth',
           locationmode: 'USA-states',
           locations: response.map(object => object.state_id),
-          z: response.map(object => object.AQI),
-          text: response.map(object => object.state_name),
+          z: response.map(object => object.avg),
+          text: response.map(object => object.state_id),
           zmin: 0,
-          zmax: 100,
+          zmax: 70,
           colorscale: [
               [0, 'rgb(242,240,247)'], [0.2, 'rgb(218,218,235)'],
               [0.4, 'rgb(188,189,220)'], [0.6, 'rgb(158,154,200)'],
@@ -236,7 +135,7 @@ function createChloro(response) {
 
 
       var layoutChloro = {
-          title: 'Chosen Month AQI Levels by State',
+          title: 'Maximum AQI Levels by State',
           geo:{
               scope: 'usa',
               showlakes: true,
@@ -375,20 +274,20 @@ function updateCharts() {
   let urlBaseMonth = "/api/v1.0/aqi/month/"
   // ---- NEW API CALL----
   d3.json(urlBaseMonth.concat(monthNumber)).then(function(monthData){
-    //  // ---- UPDATING BAR CHART ----
-    // let newX = monthData.map(object => object.state_id);
-    // let newY = monthData.map(object => object.AQI);
-    // Plotly.restyle("bar", "x", [newX]);
-    // Plotly.restyle("bar", "y", [newY]);
-    // ---- NEW MAP ----
-    createBar(monthData);
     // ---- NEW MAP ----
     createMap(monthData);
-    // ---- NEW CHLORO ----
-    createChloro(monthData)
     // ---- NEW PIE ----
     createPie(monthData);
+    });
+  // Now we make a avg API call
+  let urlAvg = "/api/v1.0/aqi-avg/month/"
+  // ---- NEW API CALL----
+  d3.json(urlAvg.concat(monthNumber)).then(function(monthAvg){
+    // ---- NEW CHLORO ----
+    createChloro(monthAvg);
+    createBar(monthAvg)
   });
+
 };
 
 
@@ -411,6 +310,8 @@ function updateBubble() {
     createPie(stateData);
   });
 };
+
+
 
 
 let urlMonth = "/api/v1.0/aqi/month/"

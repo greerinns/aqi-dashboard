@@ -126,6 +126,29 @@ def state(i):
     #return jsonify(dict.to_json())
     return jsonify(output_data)
 
+@app.route("/api/v1.0/aqi-avg/month/<i>")
+def avg_aqi(i):
+    # Create our session (link) from Python to the DB
+    """Return a list of aqi state avg"""
+    # Query all passengers and save them back
+    conn = engine.connect()
+    # Connected to engine
+    # Reading in the aqi data from database
+    #aqi_data = pd.read_sql("SELECT * FROM "aqi" WHERE "Date" LIKE '1%'", conn)
+    # dict = aqi_data.to_dict()\
+    # SELECT * FROM aqi WHERE \"Date\" LIKE '{i}/%'
+    # aqi_data = conn.execute(text(f"SELECT state_id, max(\"AQI\") over(partition by state_id) as AVG_AQI from aqi"))
+    aqi_data = conn.execute(text(f"SELECT state_id, avg(\"AQI\") over(partition by state_id) as AVG_AQI from aqi WHERE \"Date\" LIKE '{i}/%'"))
+    output_data = [{"state_id" : row[0],
+	                "avg" : row[1]} for row in aqi_data]
+    # Closing connection
+    conn.close()
+    # Returning data from database as json
+    #return jsonify(dict.to_json())
+    return jsonify(output_data)
+
+#SELECT *, avg("AQI") over(partition by "state_id") as AVG_AQI from aqi
+
 # @app.route("/api/v1.0/aqi/month/<i>/states/avg-aqi")
 # def month_states_avg_aqi(i):
 #     # Create our session (link) from Python to the DB
