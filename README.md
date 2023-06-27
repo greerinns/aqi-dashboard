@@ -1,11 +1,3 @@
-# Project_3_US_Air_Quality
-Team Members: [Skyler Khalachyan](https://github.com/SkylerKhalachyan), [Greer Inns](https://github.com/greerinns), [Katie Djahan](https://github.com/katiedjahan), [Mwohania Taylor](https://github.com/nia12taylor)
-## Acknowledgements
-Program: University of California Berkeley Data Analytics Bootcamp
-
-Instructor: Ahmad Sweed
-
-TA’s: Venkata Kuppa, Karen Fisher, Brian Perry, Ryan Bernstein
 ## Rationale
 For our project, we focused on a series of interactive charts that visualize the trends in Air Quality Index, across the United States. Recently, air quality has been a subject of public interest as it has had such a profound effect on human health. Focusing on the patterns that come from the trends in Air Quality Index can influence climate change policy and health regulations. We chose this topic for our project due to our interest in patterns in AQI levels in different states and how it can vary across different months.
 
