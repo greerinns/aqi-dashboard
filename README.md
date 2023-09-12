@@ -1,8 +1,8 @@
 # Air Quality Index (AQI) Across the United States
 
 ## Contributors
-- Katie Djahan (@katiedjahan)
 - Greer Inns (@greerinns)
+- Katie Djahan (@katiedjahan)
 - Skyler Khalachyan (@SkylerKhalachyan)
 - Mwohania Taylor (@nia12taylor)
 
